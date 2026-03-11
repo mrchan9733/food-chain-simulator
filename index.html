@@ -3,7 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生態食物鏈模擬器(Created by ChanKY) (Food Chain Simulation) (Created by ChanKY)</title>
+    <title>生態食物鏈整合模擬器 - Created by ChanKY</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Microsoft JhengHei', Arial, sans-serif; }
+        
+        /* --- 首頁選擇區樣式 --- */
+        #hub-page {
+            background: #eef2f3;
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%; position: absolute; z-index: 10;
+        }
+        .selection-container { text-align: center; max-width: 1000px; padding: 20px; }
+        .card-wrapper { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .mode-card {
+            background: white; border-radius: 20px; width: 320px; padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer;
+            transition: transform 0.3s, border 0.3s; border: 4px solid transparent;
+        }
+        .mode-card:hover { transform: translateY(-10px); }
+        .land-card:hover { border-color: #27ae60; }
+        .ocean-card:hover { border-color: #2980b9; }
+        .scenario { background: #f9f9f9; padding: 15px; border-radius: 10px; font-size: 0.95em; text-align: left; margin: 15px 0; min-height: 100px;}
+        .question { color: #d35400; font-weight: bold; display: block; margin-top: 8px; font-style: italic; }
+        .start-btn { border: none; padding: 12px; border-radius: 50px; color: white; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1em;}
+        
+        /* --- 模擬器顯示區樣式 --- */
+        #simulator-wrapper {
+            display: none; width: 100%; height: 100%; position: absolute; z-index: 5;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+        
+        /* 懸浮的「返回首頁」按鈕 */
+        .floating-back-btn {
+            position: fixed; top: 15px; left: 15px; z-index: 999;
+            background: #e74c3c; color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: background 0.3s;
+        }
+        .floating-back-btn:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div id="hub-page">
+    <div class="selection-container">
+        <h1 style="font-size: 2.5em; color: #2980b9; margin-bottom: 0;">🌍 生態平衡觀察站</h1>
+        <p style="font-size: 1.2em; color: #7f8c8d;">科學家，今天你想要觀測哪一個生態系統的能量流動？</p>
+        
+        <div class="card-wrapper">
+            <div class="mode-card land-card" onclick="launchSimulator('land')">
+                <div style="font-size:60px">🌿</div>
+                <h2 style="color: #27ae60;">綠色大地</h2>
+                <div class="scenario">
+                    這裡有廣闊的草地、敏捷的兔子與狡猾的蛇與老鷹。
+                    <span class="question">❓ 試著將老鷹數量減少，觀察食物鏈發生的連鎖反應 (營養級聯現象)？</span>
+                </div>
+                <button class="start-btn" style="background:#27ae60">進入陸地生態系</button>
+            </div>
+
+            <div class="mode-card ocean-card" onclick="launchSimulator('ocean')">
+                <div style="font-size:60px">🌊</div>
+                <h2 style="color: #2980b9;">深藍海洋</h2>
+                <div class="scenario">
+                    從微小的海藻到巨大的鯊魚，隱藏著無形的能量競爭。
+                    <span class="question">❓ 根據捕食者與獵物的關係，若蝦群突然翻倍對海藻有何影響？</span>
+                </div>
+                <button class="start-btn" style="background:#2980b9">進入海洋生態系</button>
+            </div>
+        </div>
+        <p style="margin-top: 40px; color: #bdc3c7; font-size: 0.8em;">Created by ChanKY | 生物科學探究系列</p>
+    </div>
+</div>
+
+<div id="simulator-wrapper">
+    <button class="floating-back-btn" onclick="goHome()">🏠 返回選擇模式</button>
+    <iframe id="sim-frame"></iframe>
+</div>
+
+<template id="code-land">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生態食物鏈模擬器</title>
     <style>
         /* 共用設定 */
         body { font-family: 'Microsoft JhengHei', Arial, sans-serif; background-color: #f0f4f8; color: #333; padding: 20px; }
@@ -272,7 +355,6 @@
     let year = 0;
     let historyStack = [];
     let timeSeriesData = [];
-    
     function saveState() {
         historyStack.push({ stats: { ...stats }, year: year });
     }
@@ -283,7 +365,6 @@
         document.getElementById('rabbit-count').innerText = Math.round(stats.rabbits);
         document.getElementById('grass-count').innerText = Math.round(stats.grass);
         document.getElementById('stage-display').innerText = `第 ${year} 年`;
-        
         ['hawks', 'snakes', 'rabbits', 'grass'].forEach(species => {
             let percentHeight = (stats[species] / initialStats[species]) * 50; 
             if (percentHeight > 100) percentHeight = 100;
@@ -307,17 +388,14 @@
         const width = canvas.width;
         const height = canvas.height;
         const padX = 40, padY = 20;
-        
         ctx.clearRect(0, 0, width, height);
         const maxYear = Math.max(12, timeSeriesData.length > 0 ? timeSeriesData[timeSeriesData.length - 1].year : 12);
-        
         let maxRatio = 1.5; 
         timeSeriesData.forEach(d => {
             ['hawks', 'snakes', 'rabbits', 'grass'].forEach(s => {
                 maxRatio = Math.max(maxRatio, d[s] / initialStats[s]);
             });
         });
-        
         const getX = (yr) => padX + (yr / maxYear) * (width - padX * 2);
         const getY = (val, species) => {
             const ratio = val / initialStats[species];
@@ -335,7 +413,6 @@
         ctx.fillText('初始基準', 2, y100 + 4);
 
         const colors = { hawks: '#e74c3c', snakes: '#e67e22', rabbits: '#f1c40f', grass: '#2ecc71' };
-        
         ['grass', 'rabbits', 'snakes', 'hawks'].forEach(species => {
             if(timeSeriesData.length === 0) return;
             ctx.beginPath();
@@ -354,7 +431,6 @@
                 ctx.fill();
             });
         });
-        
         ctx.fillStyle = '#2c3e50';
         for(let i=0; i<=maxYear; i+= (maxYear > 20 ? 5 : 1)) {
             ctx.fillText(i + '年', getX(i) - 10, height - 2);
@@ -387,7 +463,6 @@
         stats = { ...initialStats };
         year = 0;
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-        
         document.getElementById('logs').innerHTML = `
             <div class="log-entry">
                 <div class="log-title">[初始化] 系統已重設</div>
@@ -416,43 +491,35 @@
         const hawkDisease = document.getElementById('hawk-disease').checked;
         const snakeDisease = document.getElementById('snake-disease').checked;
         const rabbitDisease = document.getElementById('rabbit-disease').checked;
-        
         let grassEaten = stats.rabbits * 1.0 * (stats.grass / 20000);
         let newGrass = stats.grass + stats.grass * 0.207 * (1 - stats.grass / 40000) - grassEaten;
-        
         let rabbitsEaten = stats.snakes * 2.0 * (stats.rabbits / 2070);
         let rabbitStarvation = (stats.grass < 5000) ? 0.4 : 0;
         let newRabbits = stats.rabbits + stats.rabbits * 0.3222 * (stats.grass / 20000) - rabbitsEaten - stats.rabbits * (0.1 + rabbitStarvation);
-        
         let snakesEaten = stats.hawks * 1.5 * (stats.snakes / 230);
         let snakeStarvation = (stats.rabbits < 500) ? 0.4 : 0;
         let newSnakes = stats.snakes + stats.snakes * 0.3217 * (stats.rabbits / 2070) - snakesEaten - stats.snakes * (0.1 + snakeStarvation);
-        
-        let hawkStarvation = (stats.snakes < 50) ? 0.4 : 0; 
+        let hawkStarvation = (stats.snakes < 50) ? 0.4 : 0;
         let newHawks = stats.hawks + stats.hawks * 0.1 * (stats.snakes / 230) - stats.hawks * (0.1 + hawkStarvation);
-        
         if (hawkDisease) newHawks *= 0.5;
         if (snakeDisease) newSnakes *= 0.5;
         if (rabbitDisease) newRabbits *= 0.5;
-
         stats.grass = newGrass < 1 ? 0 : Math.max(0, newGrass);
         stats.rabbits = newRabbits < 1 ? 0 : Math.max(0, newRabbits);
         stats.snakes = newSnakes < 1 ? 0 : Math.max(0, newSnakes);
         stats.hawks = newHawks < 1 ? 0 : Math.max(0, newHawks);
-
         updateDisplay();
         generateExplanationReport(oldStats);
     }
 
     function generateExplanationReport(oldStats) {
         const logsBox = document.getElementById('logs');
-        
         if (stats.grass === 0 && stats.rabbits === 0 && stats.snakes === 0 && stats.hawks === 0) {
             let html = `
             <div class="log-entry">
                 <div class="log-title">📊 [第 ${year} 年] 生態崩潰警告</div>
                 <div class="log-bullet" style="color:#c0392b; font-weight:bold;">
-                    ⚠️ 系統完全崩潰 (Ecosystem Collapse <span class="speak-icon" onclick="speak('Ecosystem Collapse')">🔊</span>)：由於生產者(草)枯竭或極端干擾，食物鏈的能量基礎徹底喪失，所有物種均已滅絕。
+                ⚠️ 系統完全崩潰 (Ecosystem Collapse <span class="speak-icon" onclick="speak('Ecosystem Collapse')">🔊</span>)：由於生產者(草)枯竭或極端干擾，食物鏈的能量基礎徹底喪失，所有物種均已滅絕。
                 </div>
             </div>`;
             logsBox.innerHTML += html;
@@ -466,7 +533,6 @@
         const hawkDisease = document.getElementById('hawk-disease').checked;
         const snakeDisease = document.getElementById('snake-disease').checked;
         const rabbitDisease = document.getElementById('rabbit-disease').checked;
-
         if (hawkDisease || snakeDisease || rabbitDisease) {
             observations.push("疾病蔓延");
             changes.push(`<span style="color:#e74c3c;">🦠 疾病肆虐 (Disease Outbreak <span class="speak-icon" onclick="speak('Disease Outbreak')">🔊</span>)：感染疾病的生物死亡率大增，嚴重削弱了該族群的適應力與數量。</span>`);
@@ -534,7 +600,6 @@
         }
 
         let obsText = observations.length > 0 ? observations.join("、") : "無明顯變化";
-        
         let reportHTML = `
         <div class="log-entry">
             <div class="log-title">📊 [第 ${year} 年觀察報告] 時間推演結果：</div>
@@ -563,7 +628,576 @@
     }
 
     updateDisplay();
+    const passwords = { 1: "plk", 2: "ckt", 3: "ps", 4: "is", 5: "a", 6: "good", 7: "school" };
+    function unlockAnswer(id) {
+        let password = prompt(`🔒 這是第 ${id} 題，請輸入專屬解鎖密碼以查看答案：`);
+        if (password === passwords[id]) {
+            document.getElementById("ans-" + id).style.display = "block";
+            document.getElementById("btn-" + id).style.display = "none";
+        } else if (password !== null) {
+            alert("❌ 密碼錯誤，請重新嘗試！");
+        }
+    }
+</script>
+</body>
+</html>
+</template>
 
+<template id="code-ocean">
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海洋食物鏈模擬器</title>
+    <style>
+        /* 共用設定與海洋背景 */
+        body { 
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #005c97 0%, #363795 100%); /* 海洋漸層 */
+            color: #333; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; border-bottom: 3px solid #3498db; padding-bottom: 10px; max-width: 950px; margin: 0 auto 5px auto; background: rgba(255,255,255,0.8); border-radius: 10px 10px 0 0; padding-top: 15px;}
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 20px; font-size: 14px; background: rgba(255,255,255,0.8); max-width: 950px; margin: 0 auto 20px auto; padding-bottom: 15px; border-radius: 0 0 10px 10px;}
+        .container { max-width: 950px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); margin-bottom: 30px;}
+        
+        /* Layout - 模擬器區塊 */
+        .top-row { display: flex; gap: 20px; margin-bottom: 10px; }
+        .pyramid-section { flex: 1.2; display: flex; flex-direction: column; gap: 8px; }
+        .bar-chart-section { flex: 0.8; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; }
+        .line-graph-section { background: #fafafa; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; text-align: center; }
+        
+        /* Pyramid Styles (海洋物種色彩) */
+        .level { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 8px; font-weight: bold; color: white; font-size: 14px; box-sizing: border-box;}
+        .bg-sharks { background-color: #2c3e50; } /* 深藍 */
+        .bg-tunas { background-color: #2980b9; } /* 海洋藍 */
+        .bg-shrimps { background-color: #f39c12; color: #fff; } /* 蝦橘色 */
+        .bg-algae { background-color: #1abc9c; } /* 海藻綠 */
+        
+        .level-sharks { width: 55%; margin: 0 auto; }
+        .level-tunas { width: 70%; margin: 0 auto; }
+        .level-shrimps { width: 85%; margin: 0 auto; }
+        .level-algae { width: 100%; margin: 0 auto; }
+        
+        .controls { display: flex; gap: 4px; align-items: center; font-size: 12px;}
+        button.btn-sim { cursor: pointer; padding: 4px 6px; border: none; border-radius: 4px; font-weight: bold; }
+        .btn-add, .btn-sub { background-color: #ecf0f1; color: #333; }
+        .btn-add:hover, .btn-sub:hover { background-color: #bdc3c7; }
+        
+        /* Chart Shared */
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; color: #2c3e50; border-bottom: 2px dashed #ddd; padding-bottom: 5px;}
+        .stage-badge { background-color: #34495e; color: white; padding: 3px 8px; border-radius: 4px; font-size: 14px; }
+        
+        /* Bar Chart Styles */
+        .bar-area { display: flex; justify-content: space-around; align-items: flex-end; height: 160px; border-bottom: 2px solid #7f8c8d; border-left: 2px solid #7f8c8d; padding-bottom: 5px; }
+        .bar-col { display: flex; flex-direction: column; align-items: center; width: 20%; height: 100%; justify-content: flex-end; }
+        .bar { width: 80%; transition: height 0.4s ease; border-radius: 4px 4px 0 0; min-height: 2px;}
+        .bar-label { margin-top: 5px; font-size: 11px; font-weight: bold; }
+
+        /* Line Graph Canvas */
+        canvas { background: white; border: 1px solid #ecf0f1; border-radius: 4px; max-width: 100%; }
+        .graph-legend { display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 13px; font-weight: bold;}
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+        /* Action Buttons & Logs */
+        .action-panel { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-large { flex: 1; padding: 12px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; }
+        .run-btn { background-color: #3498db; }
+        .run-btn:hover { background-color: #2980b9; }
+        .undo-btn { background-color: #f39c12; }
+        .undo-btn:hover { background-color: #d68910; }
+        .reset-btn { background-color: #95a5a6; }
+        .reset-btn:hover { background-color: #7f8c8d; }
+        
+        /* 動態報告欄設計 */
+        .logs-wrapper { margin-top: 15px; border: 1px solid #bdc3c7; border-radius: 5px; overflow: hidden;}
+        .logs-header { background-color: #2c3e50; color: white; padding: 8px 15px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between;}
+        .logs { padding: 15px; background: #ecf0f1; height: 220px; overflow-y: scroll; font-family: 'Microsoft JhengHei', sans-serif; font-size: 14px; line-height: 1.6;}
+        .log-entry { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #bdc3c7; }
+        .log-entry:last-child { border-bottom: none; }
+        .log-title { font-weight: bold; color: #2980b9; margin-bottom: 5px; font-size: 1.1em;}
+        .log-bullet { margin-left: 10px; color: #34495e; }
+        
+        /* details 與 summary (隱藏解答) */
+        details > summary { background-color: #3498db; color: white; padding: 8px 15px; border-radius: 5px; display: inline-block; cursor: pointer; font-weight: bold; outline: none; transition: background-color 0.3s; margin-top: 10px; font-size: 13px;}
+        details > summary:hover { background-color: #2980b9; }
+        details > summary::-webkit-details-marker { display: none; } 
+        .academic-explanation { margin-top: 10px; padding: 15px; background-color: #ffffff; border-left: 5px solid #3498db; border-radius: 0 4px 4px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* --- 解釋功能 (問答卡片) 樣式 --- */
+        .explanation-container { max-width: 950px; margin: 0 auto; padding: 20px; border-radius: 10px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
+        .section-title { font-size: 1.5em; color: #2c3e50; border-left: 5px solid #e74c3c; padding-left: 10px; margin-bottom: 20px; margin-top: 10px;}
+        .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; border-left: 6px solid #3498db; }
+        .event-title { font-size: 1.2em; font-weight: bold; color: #c0392b; margin-bottom: 10px; }
+        .question { font-size: 1.1em; color: #34495e; margin-bottom: 15px; line-height: 1.5; }
+        .unlock-btn { background-color: #3498db; color: white; border: none; padding: 10px 20px; font-size: 1em; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; font-family: 'Microsoft JhengHei', Arial, sans-serif; font-weight:bold;}
+        .unlock-btn:hover { background-color: #2980b9; }
+        .answer-box { display: none; margin-top: 15px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px; font-size: 1.1em; color: #16a085; line-height: 1.6; }
+
+        /* 語音按鈕樣式 */
+        .speak-icon { cursor: pointer; font-size: 1.1em; margin-left: 4px; vertical-align: middle; transition: transform 0.2s;}
+        .speak-icon:hover { transform: scale(1.2); }
+    </style>
+</head>
+<body>
+
+<h1>🌊 海洋食物鏈模擬器 (Marine Food Chain Simulator <span class="speak-icon" onclick="speak('Marine Food Chain Simulator')">🔊</span>)</h1>
+<div class="subtitle">適用於探究--短期數量變化--及--長期趨勢 (Long-term Trends <span class="speak-icon" onclick="speak('Long-term Trends')">🔊</span>)--</div>
+
+<div class="container">
+    <div class="top-row">
+        <div class="pyramid-section">
+            <div class="level level-sharks bg-sharks">
+                <div>🦈 鯊魚: <span id="shark-count">34</span></div>
+                <div class="controls">
+                    <button class="btn-sim btn-sub" onclick="modify('sharks', -10)">-10</button>
+                    <button class="btn-sim btn-add" onclick="modify('sharks', 10)">+10</button>
+                    <input type="checkbox" id="shark-disease" title="疾病 (Disease)"> 🦠
+                </div>
+            </div>
+            <div class="level level-tunas bg-tunas">
+                <div>🐟 鮪魚: <span id="tuna-count">230</span></div>
+                <div class="controls">
+                    <button class="btn-sim btn-sub" onclick="modify('tunas', -30)">-30</button>
+                    <button class="btn-sim btn-add" onclick="modify('tunas', 30)">+30</button>
+                    <input type="checkbox" id="tuna-disease" title="疾病 (Disease)"> 🦠
+                </div>
+            </div>
+            <div class="level level-shrimps bg-shrimps">
+                <div>🦐 蝦群: <span id="shrimp-count">2070</span></div>
+                <div class="controls">
+                    <button class="btn-sim btn-sub" onclick="modify('shrimps', -300)">-300</button>
+                    <button class="btn-sim btn-add" onclick="modify('shrimps', 300)">+300</button>
+                    <input type="checkbox" id="shrimp-disease" title="疾病 (Disease)"> 🦠
+                </div>
+            </div>
+            <div class="level level-algae bg-algae">
+                <div>🌿 海藻: <span id="algae-count">20000</span></div>
+                <div class="controls">
+                    <button class="btn-sim btn-sub" onclick="modify('algae', -3000)">-3000</button>
+                    <button class="btn-sim btn-add" onclick="modify('algae', 3000)">+3000</button>
+                    <span style="visibility:hidden">🦠</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bar-chart-section">
+            <div class="chart-header">
+                <span>📊 當下長條圖</span>
+                <span class="stage-badge" id="stage-display">第 0 年</span>
+            </div>
+            <div class="bar-area">
+                <div class="bar-col"><div class="bar bg-sharks" id="bar-sharks"></div><div class="bar-label">鯊魚</div></div>
+                <div class="bar-col"><div class="bar bg-tunas" id="bar-tunas"></div><div class="bar-label">鮪魚</div></div>
+                <div class="bar-col"><div class="bar bg-shrimps" id="bar-shrimps"></div><div class="bar-label">蝦群</div></div>
+                <div class="bar-col"><div class="bar bg-algae" id="bar-algae"></div><div class="bar-label">海藻</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="line-graph-section">
+        <div class="chart-header" style="justify-content: center;">📈 GRAPH 歷史趨勢折線圖 (相對百分比)</div>
+        <canvas id="lineChart" width="850" height="220"></canvas>
+        <div class="graph-legend">
+            <div class="legend-item"><span class="dot bg-sharks"></span> 鯊魚</div>
+            <div class="legend-item"><span class="dot bg-tunas"></span> 鮪魚</div>
+            <div class="legend-item"><span class="dot bg-shrimps"></span> 蝦群</div>
+            <div class="legend-item"><span class="dot bg-algae"></span> 海藻</div>
+        </div>
+    </div>
+
+    <div class="action-panel">
+        <button class="btn-large run-btn" onclick="runSimulation()">▶ 運行 1 年並產生報告</button>
+        <button class="btn-large undo-btn" onclick="undo()">↩ 返回上一年 (Undo)</button>
+        <button class="btn-large reset-btn" onclick="resetSimulation()">🔄 重設生態系 (Reset)</button>
+    </div>
+
+    <div class="logs-wrapper">
+        <div class="logs-header">
+            <span>📋 動態生態觀察報告欄 (Log & Explanations)</span>
+            <span id="log-status">狀態：系統已就緒</span>
+        </div>
+        <div class="logs" id="logs">
+            <div class="log-entry">
+                <div class="log-title">[初始化] 系統已就緒</div>
+                <div class="log-bullet">請利用上方按鈕調整生物數量，點擊「運行 1 年」後，系統會為您產出學術分析報告。</div>
+                <div class="log-bullet" style="color:#d35400; font-weight:bold; margin-top:5px;">💡 測試建議：試著將鯊魚數量減少(按 -10 三次)，然後連續點擊「運行 1 年」，觀察食物鏈發生的連鎖反應，這稱為 營養級聯現象 (Trophic Cascade <span class="speak-icon" onclick="speak('Trophic Cascade')">🔊</span>)。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="explanation-container">
+    <div class="section-title">💡 課後探索與原理解析 (利用上方模擬器尋找答案)</div>
+    <p style="color: #7f8c8d; margin-bottom: 20px;">引導思考生態系統的 動態平衡 (Dynamic Equilibrium <span class="speak-icon" onclick="speak('Dynamic Equilibrium')">🔊</span>)（需老師輸入各題專屬密碼解鎖答案）</p>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 1：蝦群的族群 (Population <span class="speak-icon" onclick="speak('Population')">🔊</span>) 數量突然翻倍（增加至 200%）</div>
+        <div class="question">❓ 引導問題：根據 捕食者與獵物 (Predator and Prey <span class="speak-icon" onclick="speak('Predator and Prey')">🔊</span>) 的關係，這對『海藻』和『鮪魚』的數量最初會有什麼影響？為什麼？</div>
+        <button class="unlock-btn" id="btn-1" onclick="unlockAnswer(1)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-1">
+            <strong>✅ 答案解析：</strong><br>
+            海藻的數量會「減少」，因為有更多的蝦群在消耗海藻。鮪魚的數量會「增加」，因為鮪魚有了比平常更豐富的食物來源（蝦群）。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 2：由於不明疾病，大部分的鯊魚死亡了</div>
+        <div class="question">❓ 引導問題：移除 頂級掠食者 (Apex Predator <span class="speak-icon" onclick="speak('Apex Predator')">🔊</span>)（鯊魚）後，短期內『鮪魚』的數量會如何變化？這又會如何連帶影響『蝦群』？</div>
+        <button class="unlock-btn" id="btn-2" onclick="unlockAnswer(2)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-2">
+            <strong>✅ 答案解析：</strong><br>
+            短期內鮪魚的數量會「大幅增加」，因為缺少了天敵（鯊魚）的捕食。這會連帶導致蝦群的數量「急劇減少」，因為捕食牠們的鮪魚變多了。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 3：蝦群的族群數量減半（降至 50%）</div>
+        <div class="question">❓ 引導問題：蝦群數量減少最初對海藻、鮪魚和鯊魚有什麼影響？</div>
+        <button class="unlock-btn" id="btn-3" onclick="unlockAnswer(3)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-3">
+            <strong>✅ 答案解析：</strong><br>
+            海藻的數量會「增加」，因為吃海藻的蝦群變少了。鮪魚和鯊魚的數量會「減少」，因為牠們的食物來源（直接或間接）減少了。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 4：鮪魚的族群數量翻倍</div>
+        <div class="question">❓ 引導問題：增加鮪魚的數量對『海藻』有什麼影響？解釋為什麼：</div>
+        <button class="unlock-btn" id="btn-4" onclick="unlockAnswer(4)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-4">
+            <strong>✅ 答案解析：</strong><br>
+            海藻的數量會「增加」。因為鮪魚變多了，會吃掉更多的蝦群，導致蝦群數量減少。蝦群變少後，海藻被消耗的量就減少了，因此海藻會變得繁盛。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 5：鮪魚的族群數量減半</div>
+        <div class="question">❓ 引導問題：鮪魚的數量減少對『蝦群』和『鯊魚』有什麼影響？</div>
+        <button class="unlock-btn" id="btn-5" onclick="unlockAnswer(5)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-5">
+            <strong>✅ 答案解析：</strong><br>
+            蝦群的數量會「增加」，因為吃牠們的 天敵 (Natural Enemy <span class="speak-icon" onclick="speak('Natural Enemy')">🔊</span>)（鮪魚）變少了。鯊魚的數量會「減少」，因為鯊魚的主要食物來源減少了。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 6：鯊魚的族群數量翻倍</div>
+        <div class="question">❓ 引導問題：增加鯊魚的數量對『蝦群』有什麼影響？解釋為什麼：</div>
+        <button class="unlock-btn" id="btn-6" onclick="unlockAnswer(6)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-6">
+            <strong>✅ 答案解析：</strong><br>
+            蝦群的數量反而會「增加」。因為鯊魚變多了，會吃掉大量的鮪魚，導致鮪魚的數量急劇減少。鮪魚減少後，蝦群面臨的 捕食壓力 (Predation Pressure <span class="speak-icon" onclick="speak('Predation Pressure')">🔊</span>) 變小，因此蝦群數量會不降反增。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="event-title">⚠️ 變化 7：極端生態干擾（海洋熱浪與嚴重污染）</div>
+        <div class="question">❓ 引導問題：發生了嚴重的海洋污染與熱浪，導致所有的海藻都白化死亡了。這樣的重大干擾會發生什麼事？</div>
+        <button class="unlock-btn" id="btn-7" onclick="unlockAnswer(7)">🔒 輸入密碼查看解答</button>
+        <div class="answer-box" id="ans-7">
+            <strong>✅ 答案解析：</strong><br>
+            這會導致生態系統「完全崩潰」。因為海藻是 生產者 (Producer <span class="speak-icon" onclick="speak('Producer')">🔊</span>)，是整個食物鏈獲取能量的唯一基礎來源。沒有了海藻，蝦群會餓死，接著鮪魚和鯊魚也會因為缺乏食物而相繼死亡。
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 語音合成功能 ---
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US'; 
+            utterance.rate = 0.9;     
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('抱歉，您的瀏覽器不支援語音播放功能。');
+        }
+    }
+
+    // --- 嚴謹的生態數學模型區塊 (精準 Lotka-Volterra 平衡) ---
+    const initialStats = { sharks: 34, tunas: 230, shrimps: 2070, algae: 20000 };
+    let stats = { ...initialStats };
+    let year = 0;
+    let historyStack = [];
+    let timeSeriesData = [];
+    function saveState() {
+        historyStack.push({ stats: { ...stats }, year: year });
+    }
+
+    function updateDisplay() {
+        document.getElementById('shark-count').innerText = Math.round(stats.sharks);
+        document.getElementById('tuna-count').innerText = Math.round(stats.tunas);
+        document.getElementById('shrimp-count').innerText = Math.round(stats.shrimps);
+        document.getElementById('algae-count').innerText = Math.round(stats.algae);
+        document.getElementById('stage-display').innerText = `第 ${year} 年`;
+        ['sharks', 'tunas', 'shrimps', 'algae'].forEach(species => {
+            let percentHeight = (stats[species] / initialStats[species]) * 50; 
+            if (percentHeight > 100) percentHeight = 100;
+            const barElement = document.getElementById('bar-' + species);
+            barElement.style.height = percentHeight + '%';
+            barElement.style.backgroundColor = stats[species] <= 0 ? '#bdc3c7' : '';
+        });
+
+        const existingIndex = timeSeriesData.findIndex(d => d.year === year);
+        if (existingIndex >= 0) {
+            timeSeriesData[existingIndex] = { year, ...stats };
+        } else {
+            timeSeriesData.push({ year, ...stats });
+        }
+        drawChart();
+    }
+
+    function drawChart() {
+        const canvas = document.getElementById('lineChart');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const padX = 40, padY = 20;
+        ctx.clearRect(0, 0, width, height);
+        const maxYear = Math.max(12, timeSeriesData.length > 0 ? timeSeriesData[timeSeriesData.length - 1].year : 12);
+        let maxRatio = 1.5; 
+        timeSeriesData.forEach(d => {
+            ['sharks', 'tunas', 'shrimps', 'algae'].forEach(s => {
+                maxRatio = Math.max(maxRatio, d[s] / initialStats[s]);
+            });
+        });
+        const getX = (yr) => padX + (yr / maxYear) * (width - padX * 2);
+        const getY = (val, species) => {
+            const ratio = val / initialStats[species];
+            return (height - padY) - (ratio / maxRatio) * (height - padY * 2);
+        };
+
+        ctx.strokeStyle = '#ecf0f1';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        const y100 = getY(initialStats.sharks, 'sharks');
+        ctx.moveTo(padX, y100); ctx.lineTo(width - padX, y100); ctx.stroke();
+        
+        ctx.fillStyle = '#7f8c8d';
+        ctx.font = '10px Arial';
+        ctx.fillText('初始基準', 2, y100 + 4);
+
+        const colors = { sharks: '#2c3e50', tunas: '#2980b9', shrimps: '#f39c12', algae: '#1abc9c' };
+        ['algae', 'shrimps', 'tunas', 'sharks'].forEach(species => {
+            if(timeSeriesData.length === 0) return;
+            ctx.beginPath();
+            ctx.moveTo(getX(timeSeriesData[0].year), getY(timeSeriesData[0][species], species));
+            for(let i=1; i<timeSeriesData.length; i++) {
+                ctx.lineTo(getX(timeSeriesData[i].year), getY(timeSeriesData[i][species], species));
+            }
+        
+            ctx.strokeStyle = colors[species];
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            timeSeriesData.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(getX(d.year), getY(d[species], species), 4, 0, Math.PI * 2);
+                 ctx.fillStyle = colors[species];
+                ctx.fill();
+            });
+        });
+        ctx.fillStyle = '#2c3e50';
+        for(let i=0; i<=maxYear; i+= (maxYear > 20 ? 5 : 1)) {
+            ctx.fillText(i + '年', getX(i) - 10, height - 2);
+        }
+    }
+
+    function modify(species, amount) {
+        saveState();
+        stats[species] = Math.max(0, stats[species] + amount);
+        updateDisplay();
+        logSimpleAction(`手動調整：您改變了 ${species === 'sharks' ? '鯊魚' : species === 'tunas' ? '鮪魚' : species === 'shrimps' ? '蝦群' : '海藻'} 的數量。`);
+    }
+
+    function undo() {
+        if (historyStack.length > 0) {
+            const prevState = historyStack.pop();
+            stats = { ...prevState.stats };
+            year = prevState.year;
+            timeSeriesData = timeSeriesData.filter(d => d.year <= year);
+            updateDisplay();
+            logSimpleAction(`↩ 已退回至第 ${year} 年狀態。`);
+        } else {
+            logSimpleAction("⚠️ 已經退回最起點。");
+        }
+    }
+
+    function resetSimulation() {
+        historyStack = [];
+        timeSeriesData = [];
+        stats = { ...initialStats };
+        year = 0;
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.getElementById('logs').innerHTML = `
+            <div class="log-entry">
+                <div class="log-title">[初始化] 系統已重設</div>
+                <div class="log-bullet">各項數據已回歸自然平衡狀態。</div>
+                <div class="log-bullet" style="color:#d35400; font-weight:bold; margin-top:5px;">💡 測試建議：試著將鯊魚數量減少(按 -10 三次)，然後連續點擊「運行 1 年」，觀察食物鏈發生的連鎖反應。</div>
+            </div>`;
+        updateDisplay();
+    }
+
+    function logSimpleAction(msg) {
+        const logsBox = document.getElementById('logs');
+        let newLog = `
+            <div class="log-entry">
+                <div class="log-title">[操作紀錄] 第 ${year} 年</div>
+                <div class="log-bullet">🔸 ${msg}</div>
+            </div>`;
+        logsBox.innerHTML += newLog;
+        logsBox.scrollTop = logsBox.scrollHeight;
+    }
+
+    function runSimulation() {
+        saveState();
+        let oldStats = { ...stats };
+        year++;
+        
+        const sharkDisease = document.getElementById('shark-disease').checked;
+        const tunaDisease = document.getElementById('tuna-disease').checked;
+        const shrimpDisease = document.getElementById('shrimp-disease').checked;
+        let algaeEaten = stats.shrimps * 1.0 * (stats.algae / 20000);
+        let newAlgae = stats.algae + stats.algae * 0.207 * (1 - stats.algae / 40000) - algaeEaten;
+        let shrimpsEaten = stats.tunas * 2.0 * (stats.shrimps / 2070);
+        let shrimpStarvation = (stats.algae < 5000) ? 0.4 : 0;
+        let newShrimps = stats.shrimps + stats.shrimps * 0.3222 * (stats.algae / 20000) - shrimpsEaten - stats.shrimps * (0.1 + shrimpStarvation);
+        let tunasEaten = stats.sharks * 1.5 * (stats.tunas / 230);
+        let tunaStarvation = (stats.shrimps < 500) ? 0.4 : 0;
+        let newTunas = stats.tunas + stats.tunas * 0.3217 * (stats.shrimps / 2070) - tunasEaten - stats.tunas * (0.1 + tunaStarvation);
+        let sharkStarvation = (stats.tunas < 50) ? 0.4 : 0;
+        let newSharks = stats.sharks + stats.sharks * 0.1 * (stats.tunas / 230) - stats.sharks * (0.1 + sharkStarvation);
+        if (sharkDisease) newSharks *= 0.5;
+        if (tunaDisease) newTunas *= 0.5;
+        if (shrimpDisease) newShrimps *= 0.5;
+        stats.algae = newAlgae < 1 ? 0 : Math.max(0, newAlgae);
+        stats.shrimps = newShrimps < 1 ? 0 : Math.max(0, newShrimps);
+        stats.tunas = newTunas < 1 ? 0 : Math.max(0, newTunas);
+        stats.sharks = newSharks < 1 ? 0 : Math.max(0, newSharks);
+        updateDisplay();
+        generateExplanationReport(oldStats);
+    }
+
+    function generateExplanationReport(oldStats) {
+        const logsBox = document.getElementById('logs');
+        if (stats.algae === 0 && stats.shrimps === 0 && stats.tunas === 0 && stats.sharks === 0) {
+            let html = `
+            <div class="log-entry">
+                <div class="log-title">📊 [第 ${year} 年] 生態崩潰警告</div>
+                <div class="log-bullet" style="color:#c0392b; font-weight:bold;">
+                ⚠️ 系統完全崩潰 (Ecosystem Collapse <span class="speak-icon" onclick="speak('Ecosystem Collapse')">🔊</span>)：由於生產者(海藻)枯竭或極端干擾，食物鏈的能量基礎徹底喪失，所有物種均已滅絕。
+                </div>
+            </div>`;
+            logsBox.innerHTML += html;
+            logsBox.scrollTop = logsBox.scrollHeight;
+            return;
+        }
+
+        let changes = [];
+        let observations = [];
+
+        const sharkDisease = document.getElementById('shark-disease').checked;
+        const tunaDisease = document.getElementById('tuna-disease').checked;
+        const shrimpDisease = document.getElementById('shrimp-disease').checked;
+        if (sharkDisease || tunaDisease || shrimpDisease) {
+            observations.push("疾病蔓延");
+            changes.push(`<span style="color:#e74c3c;">🦠 疾病肆虐 (Disease Outbreak <span class="speak-icon" onclick="speak('Disease Outbreak')">🔊</span>)：感染疾病的生物死亡率大增，嚴重削弱了該族群的適應力與數量。</span>`);
+        }
+
+        // --- 鯊魚邏輯 ---
+        let sharkDiff = stats.sharks - oldStats.sharks;
+        if (stats.sharks === 0 && oldStats.sharks > 0) {
+            observations.push("鯊魚滅絕");
+            changes.push("🦈 <b>鯊魚：</b>族群已完全滅絕 (Extinct <span class=\"speak-icon\" onclick=\"speak('Extinct')\">🔊</span>)。由於缺乏能量來源(鮪魚)或環境壓力過大，頂級掠食者 (Apex Predator <span class=\"speak-icon\" onclick=\"speak('Apex Predator')\">🔊</span>) 已從此生態系統中消失。");
+        } else if (stats.sharks > 0 && sharkDiff > 1) {
+            observations.push("鯊魚數量明顯增加");
+            changes.push("🦈 <b>鯊魚：</b>數量上升。次級消費者 (Secondary Consumer <span class=\"speak-icon\" onclick=\"speak('Secondary Consumer')\">🔊</span>) (鮪魚) 數量充足，提供了豐富的能量，促使鯊魚族群擴張。");
+        } else if (stats.sharks > 0 && sharkDiff < -1) {
+            observations.push("鯊魚數量減少");
+            changes.push("🦈 <b>鯊魚：</b>數量下降。可能受限於食物(鮪魚)短缺或疾病，導致生存壓力加劇。");
+        }
+
+        // --- 鮪魚邏輯 ---
+        let tunaDiff = stats.tunas - oldStats.tunas;
+        if (stats.tunas === 0 && oldStats.tunas > 0) {
+            observations.push("鮪魚滅絕");
+            changes.push("🐟 <b>鮪魚：</b>族群已完全滅絕。失去了獵物(蝦群)或遭遇強大的捕食壓力，導致族群無法延續。");
+        } else if (stats.tunas > 0 && tunaDiff > 2) {
+            observations.push("鮪魚數量激增");
+            changes.push("🐟 <b>鮪魚：</b>數量上升。因為頂級掠食者(鯊魚)減少，使其面臨的「由上而下捕食壓力 (Top-down Control <span class=\"speak-icon\" onclick=\"speak('Top-down Control')\">🔊</span>)」大幅降低；或是獵物充足促使族群增長。");
+        } else if (stats.tunas > 0 && tunaDiff < -2) {
+            observations.push("鮪魚數量減少");
+            changes.push("🐟 <b>鮪魚：</b>數量下降。主因是天敵(鯊魚)的大量捕食、疾病、或獵物(蝦群)不足引發的飢荒。");
+        }
+
+        // --- 蝦群邏輯 ---
+        let shrimpDiff = stats.shrimps - oldStats.shrimps;
+        if (stats.shrimps === 0 && oldStats.shrimps > 0) {
+            observations.push("蝦群滅絕");
+            changes.push("🦐 <b>蝦群：</b>族群已完全滅絕。由於生產者(海藻)耗盡或遭過度捕食，初級消費者 (Primary Consumer <span class=\"speak-icon\" onclick=\"speak('Primary Consumer')\">🔊</span>) 崩潰。");
+        } else if (stats.shrimps > 0 && shrimpDiff > 5) {
+            observations.push("蝦群大量繁殖");
+            changes.push("🦐 <b>蝦群：</b>族群擴張。生產者(海藻)資源充沛且天敵(鮪魚)捕食壓力減少，族群快速增長。");
+        } else if (stats.shrimps > 0 && shrimpDiff < -5) {
+            observations.push("蝦群數量銳減");
+            changes.push("🦐 <b>蝦群：</b>數量下降。被大量暴增的鮪魚捕食，或因數量超過 環境負載力 (Carrying Capacity <span class=\"speak-icon\" onclick=\"speak('Carrying Capacity')\">🔊</span>) 導致海藻枯竭而引發飢荒。");
+        }
+
+        // --- 海藻邏輯 ---
+        let algaeDiff = stats.algae - oldStats.algae;
+        if (stats.algae === 0 && oldStats.algae > 0) {
+            observations.push("海藻完全枯竭");
+            changes.push("🌿 <b>海藻：</b>完全枯竭。初級消費者(蝦群)的啃食超過了植物的再生能力，或是遭受極端氣候干擾，生產者 (Producer <span class=\"speak-icon\" onclick=\"speak('Producer')\">🔊</span>) 層級瓦解。");
+        } else if (stats.algae > 0 && algaeDiff > 20) {
+            observations.push("海藻恢復茂盛");
+            changes.push("🌿 <b>海藻：</b>生物量 (Biomass <span class=\"speak-icon\" onclick=\"speak('Biomass')\">🔊</span>) 增加。可能是吃海藻的蝦群數量減少（捕食壓力下降），或是自然環境條件良好，使生產者得以進行光合作用恢復族群。");
+        } else if (stats.algae > 0 && algaeDiff < -20) {
+            observations.push("海藻資源被大量消耗");
+            changes.push("🌿 <b>海藻：</b>生物量減少。主因通常是大量的蝦群造成 過度啃食 (Overgrazing <span class=\"speak-icon\" onclick=\"speak('Overgrazing')\">🔊</span>)，消耗速度大於海藻的生長速度。");
+        }
+
+        let isHealthyEcosystem = (stats.algae > 0 && stats.shrimps > 0 && stats.tunas > 0 && stats.sharks > 0);
+        if (changes.length === 0 && isHealthyEcosystem) {
+            observations.push("各物種數量無劇烈波動");
+            changes.push("⚖️ <b>動態平衡 (Dynamic Equilibrium <span class=\"speak-icon\" onclick=\"speak('Dynamic Equilibrium')\">🔊</span>)：</b>各物種數量雖有微小波動，但出生率與死亡率大致抵銷。這表示生態系統在目前的環境負載力下，處於相對穩定的狀態。");
+        } else if (changes.length === 0 && !isHealthyEcosystem) {
+            observations.push("部分物種已不存在，殘存數量停滯");
+            changes.push("⚠️ <b>生態失衡與食物鏈斷裂 (Food Chain Disruption <span class=\"speak-icon\" onclick=\"speak('Food Chain Disruption')\">🔊</span>)：</b>由於部分關鍵物種已經滅絕，能量流動 (Energy Flow <span class=\"speak-icon\" onclick=\"speak('Energy Flow')\">🔊</span>) 受阻。殘存物種正逐漸面臨因缺乏能量而消亡的危機。");
+        }
+
+        let obsText = observations.length > 0 ? observations.join("、") : "無明顯變化";
+        let reportHTML = `
+        <div class="log-entry">
+            <div class="log-title">📊 [第 ${year} 年觀察報告] 時間推演結果：</div>
+            <div class="log-bullet" style="margin-bottom: 5px;">
+                <strong>🔍 本年觀察重點：</strong> ${obsText}。
+            </div>
+            <div class="log-bullet" style="color:#d35400; font-weight:bold; margin-bottom: 8px;">
+                ❓ 思考問題：為什麼會出現上述的變化？這對食物鏈「能量流動」有什麼影響？
+            </div>
+            <div style="margin-left: 10px;">
+                <details>
+                    <summary>💡 點擊展開學術原理解析</summary>
+                    <div class="academic-explanation">
+        `;
+
+        changes.forEach(change => {
+            reportHTML += `<div style="margin-bottom: 8px;">🔸 ${change}</div>`;
+        });
+        reportHTML += `
+                    </div>
+                </details>
+            </div>
+        </div>`;
+        logsBox.innerHTML += reportHTML;
+        logsBox.scrollTop = logsBox.scrollHeight;
+    }
+
+    updateDisplay();
     const passwords = { 1: "ki", 2: "yan", 3: "sir", 4: "is", 5: "a", 6: "good", 7: "teacher" };
     function unlockAnswer(id) {
         let password = prompt(`🔒 這是第 ${id} 題，請輸入專屬解鎖密碼以查看答案：`);
@@ -572,6 +1206,36 @@
             document.getElementById("btn-" + id).style.display = "none";
         } else if (password !== null) {
             alert("❌ 密碼錯誤，請重新嘗試！");
+        }
+    }
+</script>
+</body>
+</html>
+</template>
+
+<script>
+    function launchSimulator(mode) {
+        // 隱藏首頁
+        document.getElementById('hub-page').style.display = 'none';
+        // 顯示模擬器區塊
+        document.getElementById('simulator-wrapper').style.display = 'block';
+        
+        // 取得對應的程式碼
+        let templateId = mode === 'land' ? 'code-land' : 'code-ocean';
+        let rawCode = document.getElementById(templateId).innerHTML;
+
+        // 將原始碼注入到 iframe 裡面運行
+        let iframe = document.getElementById('sim-frame');
+        iframe.srcdoc = rawCode;
+    }
+
+    function goHome() {
+        if(confirm("切換模式將會重置當前所有數據，確定返回嗎？")) {
+            // 清空 iframe 停止原本的程式運行
+            document.getElementById('sim-frame').srcdoc = "";
+            // 切換畫面
+            document.getElementById('simulator-wrapper').style.display = 'none';
+            document.getElementById('hub-page').style.display = 'flex';
         }
     }
 </script>
