@@ -85,12 +85,15 @@
         .unlock-btn:hover { background-color: #2980b9; }
         .answer-box { display: none; margin-top: 15px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px; font-size: 1.1em; color: #16a085; line-height: 1.6; }
 
+        /* 語音按鈕樣式 */
+        .speak-icon { cursor: pointer; font-size: 1.1em; margin-left: 4px; vertical-align: middle; transition: transform 0.2s;}
+        .speak-icon:hover { transform: scale(1.2); }
     </style>
 </head>
 <body>
 
-<h1>🌱 食物鏈模擬器：生態變化探索(Created by ChanKY)</h1>
-<div class="subtitle">適用於探究--短期數量變化--及--長期趨勢--</div>
+<h1>🌱 食物鏈模擬器 (Food Chain Simulator <span class="speak-icon" onclick="speak('Food Chain Simulator')">🔊</span>)</h1>
+<div class="subtitle">適用於探究--短期數量變化--及--長期趨勢 (Long-term Trends <span class="speak-icon" onclick="speak('Long-term Trends')">🔊</span>)--</div>
 
 <div class="container">
     <div class="top-row">
@@ -100,7 +103,7 @@
                 <div class="controls">
                     <button class="btn-sim btn-sub" onclick="modify('hawks', -10)">-10</button>
                     <button class="btn-sim btn-add" onclick="modify('hawks', 10)">+10</button>
-                    <input type="checkbox" id="hawk-disease" title="疾病"> 🦠
+                    <input type="checkbox" id="hawk-disease" title="疾病 (Disease)"> 🦠
                 </div>
             </div>
             <div class="level level-snakes bg-snakes">
@@ -108,7 +111,7 @@
                 <div class="controls">
                     <button class="btn-sim btn-sub" onclick="modify('snakes', -30)">-30</button>
                     <button class="btn-sim btn-add" onclick="modify('snakes', 30)">+30</button>
-                    <input type="checkbox" id="snake-disease" title="疾病"> 🦠
+                    <input type="checkbox" id="snake-disease" title="疾病 (Disease)"> 🦠
                 </div>
             </div>
             <div class="level level-rabbits bg-rabbits">
@@ -116,7 +119,7 @@
                 <div class="controls">
                     <button class="btn-sim btn-sub" onclick="modify('rabbits', -300)">-300</button>
                     <button class="btn-sim btn-add" onclick="modify('rabbits', 300)">+300</button>
-                    <input type="checkbox" id="rabbit-disease" title="疾病"> 🦠
+                    <input type="checkbox" id="rabbit-disease" title="疾病 (Disease)"> 🦠
                 </div>
             </div>
             <div class="level level-grass bg-grass">
@@ -169,7 +172,7 @@
             <div class="log-entry">
                 <div class="log-title">[初始化] 系統已就緒</div>
                 <div class="log-bullet">請利用上方按鈕調整生物數量，點擊「運行 1 年」後，系統會為您產出學術分析報告。</div>
-                <div class="log-bullet" style="color:#d35400; font-weight:bold; margin-top:5px;">💡 測試建議：試著將老鷹數量減少(按 -10 三次)，然後連續點擊「運行 1 年」，觀察食物鏈發生的連鎖反應 (營養級聯現象)。</div>
+                <div class="log-bullet" style="color:#d35400; font-weight:bold; margin-top:5px;">💡 測試建議：試著將老鷹數量減少(按 -10 三次)，然後連續點擊「運行 1 年」，觀察食物鏈發生的連鎖反應，這稱為 營養級聯現象 (Trophic Cascade <span class="speak-icon" onclick="speak('Trophic Cascade')">🔊</span>)。</div>
             </div>
         </div>
     </div>
@@ -177,11 +180,11 @@
 
 <div class="explanation-container">
     <div class="section-title">💡 課後探索與原理解析 (利用上方模擬器尋找答案)</div>
-    <p style="color: #7f8c8d; margin-bottom: 20px;">引導思考生態系統的動態平衡（需老師輸入各題專屬密碼解鎖答案）</p>
+    <p style="color: #7f8c8d; margin-bottom: 20px;">引導思考生態系統的 動態平衡 (Dynamic Equilibrium <span class="speak-icon" onclick="speak('Dynamic Equilibrium')">🔊</span>)（需老師輸入各題專屬密碼解鎖答案）</p>
 
     <div class="card">
-        <div class="event-title">⚠️ 變化 1：兔子的種群數量突然翻倍（增加至 200%）</div>
-        <div class="question">❓ 引導問題：根據捕食者與獵物的關係，這對『草』和『蛇』的數量最初會有什麼影響？為什麼？</div>
+        <div class="event-title">⚠️ 變化 1：兔子的族群 (Population <span class="speak-icon" onclick="speak('Population')">🔊</span>) 數量突然翻倍（增加至 200%）</div>
+        <div class="question">❓ 引導問題：根據 捕食者與獵物 (Predator and Prey <span class="speak-icon" onclick="speak('Predator and Prey')">🔊</span>) 的關係，這對『草』和『蛇』的數量最初會有什麼影響？為什麼？</div>
         <button class="unlock-btn" id="btn-1" onclick="unlockAnswer(1)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-1">
             <strong>✅ 答案解析：</strong><br>
@@ -191,7 +194,7 @@
 
     <div class="card">
         <div class="event-title">⚠️ 變化 2：由於不明疾病，大部分的鷹死亡了</div>
-        <div class="question">❓ 引導問題：移除頂級捕食者（鷹）後，短期內『蛇』的數量會如何變化？這又會如何連帶影響『兔子』？</div>
+        <div class="question">❓ 引導問題：移除 頂級掠食者 (Apex Predator <span class="speak-icon" onclick="speak('Apex Predator')">🔊</span>)（鷹）後，短期內『蛇』的數量會如何變化？這又會如何連帶影響『兔子』？</div>
         <button class="unlock-btn" id="btn-2" onclick="unlockAnswer(2)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-2">
             <strong>✅ 答案解析：</strong><br>
@@ -200,7 +203,7 @@
     </div>
 
     <div class="card">
-        <div class="event-title">⚠️ 變化 3：兔子的種群數量減半（降至 50%）</div>
+        <div class="event-title">⚠️ 變化 3：兔子的族群數量減半（降至 50%）</div>
         <div class="question">❓ 引導問題：兔子數量減少最初對草、蛇和鷹有什麼影響？</div>
         <button class="unlock-btn" id="btn-3" onclick="unlockAnswer(3)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-3">
@@ -210,7 +213,7 @@
     </div>
 
     <div class="card">
-        <div class="event-title">⚠️ 變化 4：蛇的種群數量翻倍</div>
+        <div class="event-title">⚠️ 變化 4：蛇的族群數量翻倍</div>
         <div class="question">❓ 引導問題：增加蛇的數量對『草』有什麼影響？解釋為什麼：</div>
         <button class="unlock-btn" id="btn-4" onclick="unlockAnswer(4)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-4">
@@ -220,22 +223,22 @@
     </div>
 
     <div class="card">
-        <div class="event-title">⚠️ 變化 5：蛇的種群數量減半</div>
+        <div class="event-title">⚠️ 變化 5：蛇的族群數量減半</div>
         <div class="question">❓ 引導問題：蛇的數量減少對『兔子』和『鷹』有什麼影響？</div>
         <button class="unlock-btn" id="btn-5" onclick="unlockAnswer(5)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-5">
             <strong>✅ 答案解析：</strong><br>
-            兔子的數量會「增加」，因為吃牠們的天敵（蛇）變少了。鷹的數量會「減少」，因為鷹的主要食物來源減少了。
+            兔子的數量會「增加」，因為吃牠們的 天敵 (Natural Enemy <span class="speak-icon" onclick="speak('Natural Enemy')">🔊</span>)（蛇）變少了。鷹的數量會「減少」，因為鷹的主要食物來源減少了。
         </div>
     </div>
 
     <div class="card">
-        <div class="event-title">⚠️ 變化 6：鷹的種群數量翻倍</div>
+        <div class="event-title">⚠️ 變化 6：鷹的族群數量翻倍</div>
         <div class="question">❓ 引導問題：增加鷹的數量對『兔子』有什麼影響？解釋為什麼：</div>
         <button class="unlock-btn" id="btn-6" onclick="unlockAnswer(6)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-6">
             <strong>✅ 答案解析：</strong><br>
-            兔子的數量反而會「增加」。因為鷹變多了，會吃掉大量的蛇，導致蛇的數量急劇減少。蛇減少後，兔子面臨的捕食壓力變小，因此兔子數量會不降反增。
+            兔子的數量反而會「增加」。因為鷹變多了，會吃掉大量的蛇，導致蛇的數量急劇減少。蛇減少後，兔子面臨的 捕食壓力 (Predation Pressure <span class="speak-icon" onclick="speak('Predation Pressure')">🔊</span>) 變小，因此兔子數量會不降反增。
         </div>
     </div>
 
@@ -245,19 +248,31 @@
         <button class="unlock-btn" id="btn-7" onclick="unlockAnswer(7)">🔒 輸入密碼查看解答</button>
         <div class="answer-box" id="ans-7">
             <strong>✅ 答案解析：</strong><br>
-            這會導致生態系統「完全崩潰」。因為草是生產者，是整個食物鏈獲取能量的唯一基礎來源。沒有了草，兔子會餓死，接著蛇和鷹也會因為缺乏食物而相繼死亡。
+            這會導致生態系統「完全崩潰」。因為草是 生產者 (Producer <span class="speak-icon" onclick="speak('Producer')">🔊</span>)，是整個食物鏈獲取能量的唯一基礎來源。沒有了草，兔子會餓死，接著蛇和鷹也會因為缺乏食物而相繼死亡。
         </div>
     </div>
 </div>
 
 <script>
+    // --- 語音合成功能 ---
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US'; 
+            utterance.rate = 0.9;     
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('抱歉，您的瀏覽器不支援語音播放功能。');
+        }
+    }
+
     // --- 嚴謹的生態數學模型區塊 (精準 Lotka-Volterra 平衡) ---
     const initialStats = { hawks: 34, snakes: 230, rabbits: 2070, grass: 20000 };
     let stats = { ...initialStats };
     let year = 0;
     let historyStack = [];
     let timeSeriesData = [];
-
+    
     function saveState() {
         historyStack.push({ stats: { ...stats }, year: year });
     }
@@ -268,7 +283,7 @@
         document.getElementById('rabbit-count').innerText = Math.round(stats.rabbits);
         document.getElementById('grass-count').innerText = Math.round(stats.grass);
         document.getElementById('stage-display').innerText = `第 ${year} 年`;
-
+        
         ['hawks', 'snakes', 'rabbits', 'grass'].forEach(species => {
             let percentHeight = (stats[species] / initialStats[species]) * 50; 
             if (percentHeight > 100) percentHeight = 100;
@@ -292,16 +307,17 @@
         const width = canvas.width;
         const height = canvas.height;
         const padX = 40, padY = 20;
-
+        
         ctx.clearRect(0, 0, width, height);
         const maxYear = Math.max(12, timeSeriesData.length > 0 ? timeSeriesData[timeSeriesData.length - 1].year : 12);
+        
         let maxRatio = 1.5; 
         timeSeriesData.forEach(d => {
             ['hawks', 'snakes', 'rabbits', 'grass'].forEach(s => {
                 maxRatio = Math.max(maxRatio, d[s] / initialStats[s]);
             });
         });
-
+        
         const getX = (yr) => padX + (yr / maxYear) * (width - padX * 2);
         const getY = (val, species) => {
             const ratio = val / initialStats[species];
@@ -319,6 +335,7 @@
         ctx.fillText('初始基準', 2, y100 + 4);
 
         const colors = { hawks: '#e74c3c', snakes: '#e67e22', rabbits: '#f1c40f', grass: '#2ecc71' };
+        
         ['grass', 'rabbits', 'snakes', 'hawks'].forEach(species => {
             if(timeSeriesData.length === 0) return;
             ctx.beginPath();
@@ -337,7 +354,7 @@
                 ctx.fill();
             });
         });
-
+        
         ctx.fillStyle = '#2c3e50';
         for(let i=0; i<=maxYear; i+= (maxYear > 20 ? 5 : 1)) {
             ctx.fillText(i + '年', getX(i) - 10, height - 2);
@@ -370,6 +387,7 @@
         stats = { ...initialStats };
         year = 0;
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        
         document.getElementById('logs').innerHTML = `
             <div class="log-entry">
                 <div class="log-title">[初始化] 系統已重設</div>
@@ -390,7 +408,6 @@
         logsBox.scrollTop = logsBox.scrollHeight;
     }
 
-    // 核心運行與產生分析報告
     function runSimulation() {
         saveState();
         let oldStats = { ...stats };
@@ -399,33 +416,25 @@
         const hawkDisease = document.getElementById('hawk-disease').checked;
         const snakeDisease = document.getElementById('snake-disease').checked;
         const rabbitDisease = document.getElementById('rabbit-disease').checked;
-
-        // --- 修正後的動態平衡方程式 (加入密度依賴與飢餓機制) ---
         
-        // 1. 生產者 (草)：被兔子消耗的量取決於「兔子數量」與「草的尋獲率(密度)」
         let grassEaten = stats.rabbits * 1.0 * (stats.grass / 20000);
         let newGrass = stats.grass + stats.grass * 0.207 * (1 - stats.grass / 40000) - grassEaten;
-
-        // 2. 初級消費者 (兔子)：加入飢餓死亡率
+        
         let rabbitsEaten = stats.snakes * 2.0 * (stats.rabbits / 2070);
-        let rabbitStarvation = (stats.grass < 5000) ? 0.4 : 0; // 當草極度缺乏時，增加 40% 飢餓死亡率
+        let rabbitStarvation = (stats.grass < 5000) ? 0.4 : 0;
         let newRabbits = stats.rabbits + stats.rabbits * 0.3222 * (stats.grass / 20000) - rabbitsEaten - stats.rabbits * (0.1 + rabbitStarvation);
-
-        // 3. 次級消費者 (蛇)：加入飢餓死亡率
+        
         let snakesEaten = stats.hawks * 1.5 * (stats.snakes / 230);
-        let snakeStarvation = (stats.rabbits < 500) ? 0.4 : 0; // 兔子太少引發蛇飢餓
+        let snakeStarvation = (stats.rabbits < 500) ? 0.4 : 0;
         let newSnakes = stats.snakes + stats.snakes * 0.3217 * (stats.rabbits / 2070) - snakesEaten - stats.snakes * (0.1 + snakeStarvation);
-
-        // 4. 頂級掠食者 (老鷹)：加入飢餓死亡率
-        let hawkStarvation = (stats.snakes < 50) ? 0.4 : 0; // 蛇太少引發老鷹飢餓
+        
+        let hawkStarvation = (stats.snakes < 50) ? 0.4 : 0; 
         let newHawks = stats.hawks + stats.hawks * 0.1 * (stats.snakes / 230) - stats.hawks * (0.1 + hawkStarvation);
-
-        // 疾病影響 (死亡率大幅提升)
+        
         if (hawkDisease) newHawks *= 0.5;
         if (snakeDisease) newSnakes *= 0.5;
         if (rabbitDisease) newRabbits *= 0.5;
 
-        // 數量低於 1 則判定為族群滅亡
         stats.grass = newGrass < 1 ? 0 : Math.max(0, newGrass);
         stats.rabbits = newRabbits < 1 ? 0 : Math.max(0, newRabbits);
         stats.snakes = newSnakes < 1 ? 0 : Math.max(0, newSnakes);
@@ -437,13 +446,13 @@
 
     function generateExplanationReport(oldStats) {
         const logsBox = document.getElementById('logs');
-        // 檢查是否所有生物皆滅絕 (系統徹底崩潰)
+        
         if (stats.grass === 0 && stats.rabbits === 0 && stats.snakes === 0 && stats.hawks === 0) {
             let html = `
             <div class="log-entry">
                 <div class="log-title">📊 [第 ${year} 年] 生態崩潰警告</div>
                 <div class="log-bullet" style="color:#c0392b; font-weight:bold;">
-                    ⚠️ 系統完全崩潰：由於生產者(草)枯竭或極端干擾，食物鏈的能量基礎徹底喪失，所有物種均已滅絕。
+                    ⚠️ 系統完全崩潰 (Ecosystem Collapse <span class="speak-icon" onclick="speak('Ecosystem Collapse')">🔊</span>)：由於生產者(草)枯竭或極端干擾，食物鏈的能量基礎徹底喪失，所有物種均已滅絕。
                 </div>
             </div>`;
             logsBox.innerHTML += html;
@@ -454,79 +463,76 @@
         let changes = [];
         let observations = [];
 
-        // 疾病檢查
         const hawkDisease = document.getElementById('hawk-disease').checked;
         const snakeDisease = document.getElementById('snake-disease').checked;
         const rabbitDisease = document.getElementById('rabbit-disease').checked;
 
         if (hawkDisease || snakeDisease || rabbitDisease) {
             observations.push("疾病蔓延");
-            changes.push(`<span style="color:#e74c3c;">🦠 疾病肆虐：感染疾病的生物死亡率大增，嚴重削弱了該族群的適應力與數量。</span>`);
+            changes.push(`<span style="color:#e74c3c;">🦠 疾病肆虐 (Disease Outbreak <span class="speak-icon" onclick="speak('Disease Outbreak')">🔊</span>)：感染疾病的生物死亡率大增，嚴重削弱了該族群的適應力與數量。</span>`);
         }
 
-        // 老鷹邏輯
+        // --- 老鷹邏輯 ---
         let hawkDiff = stats.hawks - oldStats.hawks;
         if (stats.hawks === 0 && oldStats.hawks > 0) {
             observations.push("老鷹滅絕");
-            changes.push("🦅 <b>老鷹：</b>族群已完全滅絕 (Extinct)。由於缺乏能量來源(蛇)或環境壓力過大，頂級掠食者已從此生態系統中消失。");
+            changes.push("🦅 <b>老鷹：</b>族群已完全滅絕 (Extinct <span class=\"speak-icon\" onclick=\"speak('Extinct')\">🔊</span>)。由於缺乏能量來源(蛇)或環境壓力過大，頂級掠食者 (Apex Predator <span class=\"speak-icon\" onclick=\"speak('Apex Predator')\">🔊</span>) 已從此生態系統中消失。");
         } else if (stats.hawks > 0 && hawkDiff > 1) {
             observations.push("老鷹數量明顯增加");
-            changes.push("🦅 <b>老鷹：</b>數量上升。次級消費者(蛇)數量充足，提供了豐富的能量，促使老鷹族群擴張。");
+            changes.push("🦅 <b>老鷹：</b>數量上升。次級消費者 (Secondary Consumer <span class=\"speak-icon\" onclick=\"speak('Secondary Consumer')\">🔊</span>) (蛇) 數量充足，提供了豐富的能量，促使老鷹族群擴張。");
         } else if (stats.hawks > 0 && hawkDiff < -1) {
             observations.push("老鷹數量減少");
             changes.push("🦅 <b>老鷹：</b>數量下降。可能受限於食物(蛇)短缺或疾病，導致生存壓力加劇。");
         }
 
-        // 蛇邏輯
+        // --- 蛇邏輯 ---
         let snakeDiff = stats.snakes - oldStats.snakes;
         if (stats.snakes === 0 && oldStats.snakes > 0) {
             observations.push("蛇滅絕");
             changes.push("🐍 <b>蛇：</b>族群已完全滅絕。失去了獵物(兔子)或遭遇強大的捕食壓力，導致族群無法延續。");
         } else if (stats.snakes > 0 && snakeDiff > 2) {
             observations.push("蛇數量激增");
-            changes.push("🐍 <b>蛇：</b>數量上升。因為頂級掠食者(老鷹)減少，使其面臨的「由上而下捕食壓力 (Top-down control)」大幅降低；或是獵物(兔子)充足促使族群增長。");
+            changes.push("🐍 <b>蛇：</b>數量上升。因為頂級掠食者(老鷹)減少，使其面臨的「由上而下捕食壓力 (Top-down Control <span class=\"speak-icon\" onclick=\"speak('Top-down Control')\">🔊</span>)」大幅降低；或是獵物充足促使族群增長。");
         } else if (stats.snakes > 0 && snakeDiff < -2) {
             observations.push("蛇數量減少");
             changes.push("🐍 <b>蛇：</b>數量下降。主因是天敵(老鷹)的大量捕食、疾病、或獵物(兔子)不足引發的飢荒。");
         }
 
-        // 兔子邏輯
+        // --- 兔子邏輯 ---
         let rabbitDiff = stats.rabbits - oldStats.rabbits;
         if (stats.rabbits === 0 && oldStats.rabbits > 0) {
             observations.push("兔子滅絕");
-            changes.push("🐇 <b>兔子：</b>族群已完全滅絕。由於生產者(草)耗盡或遭過度捕食，初級消費者崩潰。");
+            changes.push("🐇 <b>兔子：</b>族群已完全滅絕。由於生產者(草)耗盡或遭過度捕食，初級消費者 (Primary Consumer <span class=\"speak-icon\" onclick=\"speak('Primary Consumer')\">🔊</span>) 崩潰。");
         } else if (stats.rabbits > 0 && rabbitDiff > 5) {
             observations.push("兔子大量繁殖");
             changes.push("🐇 <b>兔子：</b>族群擴張。生產者(草)資源充沛且天敵(蛇)捕食壓力減少，族群快速增長。");
         } else if (stats.rabbits > 0 && rabbitDiff < -5) {
             observations.push("兔子數量銳減");
-            changes.push("🐇 <b>兔子：</b>數量下降。被大量暴增的蛇捕食，或因數量超過環境負載力(Carrying Capacity)導致草地枯竭而引發飢荒。");
+            changes.push("🐇 <b>兔子：</b>數量下降。被大量暴增的蛇捕食，或因數量超過 環境負載力 (Carrying Capacity <span class=\"speak-icon\" onclick=\"speak('Carrying Capacity')\">🔊</span>) 導致草地枯竭而引發飢荒。");
         }
 
-        // 草邏輯
+        // --- 草邏輯 ---
         let grassDiff = stats.grass - oldStats.grass;
         if (stats.grass === 0 && oldStats.grass > 0) {
             observations.push("草地完全枯竭");
-            changes.push("🌿 <b>草：</b>完全枯竭。初級消費者(兔子)的啃食超過了植物的再生能力，或是遭受極端氣候干擾，生產者層級瓦解。");
+            changes.push("🌿 <b>草：</b>完全枯竭。初級消費者(兔子)的啃食超過了植物的再生能力，或是遭受極端氣候干擾，生產者 (Producer <span class=\"speak-icon\" onclick=\"speak('Producer')\">🔊</span>) 層級瓦解。");
         } else if (stats.grass > 0 && grassDiff > 20) {
             observations.push("草地恢復茂盛");
-            changes.push("🌿 <b>草：</b>生物量(Biomass)增加。可能是吃草的兔子數量減少（捕食壓力下降），或是自然環境條件良好，使生產者得以進行光合作用恢復族群。");
+            changes.push("🌿 <b>草：</b>生物量 (Biomass <span class=\"speak-icon\" onclick=\"speak('Biomass')\">🔊</span>) 增加。可能是吃草的兔子數量減少（捕食壓力下降），或是自然環境條件良好，使生產者得以進行光合作用恢復族群。");
         } else if (stats.grass > 0 && grassDiff < -20) {
             observations.push("草地資源被大量消耗");
-            changes.push("🌿 <b>草：</b>生物量減少。主因通常是大量的兔子造成過度放牧(Overgrazing)，消耗速度大於草的生長速度。");
+            changes.push("🌿 <b>草：</b>生物量減少。主因通常是大量的兔子造成 過度放牧 (Overgrazing <span class=\"speak-icon\" onclick=\"speak('Overgrazing')\">🔊</span>)，消耗速度大於草的生長速度。");
         }
 
-        // 判斷系統狀態
         let isHealthyEcosystem = (stats.grass > 0 && stats.rabbits > 0 && stats.snakes > 0 && stats.hawks > 0);
         if (changes.length === 0 && isHealthyEcosystem) {
             observations.push("各物種數量無劇烈波動");
-            changes.push("⚖️ <b>動態平衡 (Dynamic Equilibrium)：</b>各物種數量雖有微小波動，但出生率與死亡率大致抵銷。這表示生態系統在目前的環境負載力下，處於相對穩定的狀態。");
+            changes.push("⚖️ <b>動態平衡 (Dynamic Equilibrium <span class=\"speak-icon\" onclick=\"speak('Dynamic Equilibrium')\">🔊</span>)：</b>各物種數量雖有微小波動，但出生率與死亡率大致抵銷。這表示生態系統在目前的環境負載力下，處於相對穩定的狀態。");
         } else if (changes.length === 0 && !isHealthyEcosystem) {
             observations.push("部分物種已不存在，殘存數量停滯");
-            changes.push("⚠️ <b>生態失衡與食物鏈斷裂：</b>由於部分關鍵物種已經滅絕，食物鏈的能量流動受阻。殘存物種正逐漸面臨因缺乏能量而消亡的危機。");
+            changes.push("⚠️ <b>生態失衡與食物鏈斷裂 (Food Chain Disruption <span class=\"speak-icon\" onclick=\"speak('Food Chain Disruption')\">🔊</span>)：</b>由於部分關鍵物種已經滅絕，能量流動 (Energy Flow <span class=\"speak-icon\" onclick=\"speak('Energy Flow')\">🔊</span>) 受阻。殘存物種正逐漸面臨因缺乏能量而消亡的危機。");
         }
 
-        // 組裝帶有隱藏按鈕的 HTML
         let obsText = observations.length > 0 ? observations.join("、") : "無明顯變化";
         
         let reportHTML = `
@@ -556,10 +562,8 @@
         logsBox.scrollTop = logsBox.scrollHeight;
     }
 
-    // 初始化啟動
     updateDisplay();
 
-    // --- 解釋功能 (問答解鎖) 邏輯區塊 ---
     const passwords = { 1: "ki", 2: "yan", 3: "sir", 4: "is", 5: "a", 6: "good", 7: "teacher" };
     function unlockAnswer(id) {
         let password = prompt(`🔒 這是第 ${id} 題，請輸入專屬解鎖密碼以查看答案：`);
